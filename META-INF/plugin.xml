@@ -1,0 +1,65 @@
+<idea-plugin version="2">
+  <id>ThinkLint</id>
+  <name>ThinkLint</name>
+  <version>1.0</version>
+  <vendor email="625305505@qq.com" url="https://github.com/zenus/ThinkLint"></vendor>
+
+  <description><![CDATA[
+    ThinkLint is a Phpstorm plugin for thinkphpLint!
+    ]]></description>
+
+  <change-notes><![CDATA[
+    ]]>
+  </change-notes>
+
+  <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="131"/>
+
+  <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+    <depends>com.jetbrains.php</depends>
+    <depends>com.intellij.modules.platform</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+      <projectConfigurable instance="com.thinklint.PhpLintConfigurable"
+                           displayName="PhpLint"
+                           id="com.thinklint.PhpLintConfigurable"
+                           parentId="reference.webide.settings.project.settings.php"
+                           groupWeight="30"
+              />
+    <applicationService serviceImplementation="com.thinklint.PhpLintConfigurationManager"/>
+    <projectService serviceImplementation="com.thinklint.PhpLintProjectConfiguration"/>
+    <localInspection language="PHP"
+                     shortName="PhpLintInspection"
+                     enabledByDefault="false"
+                     level="ERROR"
+                     groupName="PHP"
+                     implementationClass="com.thinklint.PhpLintInspection"
+                     displayName="PhpLint" />
+    <externalAnnotator language="PHP"
+                       implementationClass="com.thinklint.PhpLintAnnotator" />
+  </extensions>
+
+    <extensionPoints>
+        <extensionPoint qualifiedName="com.thinklint.PhpLintConfigurationProvider" interface="com.thinklint.PhpLintConfigurationProvider"/>
+    </extensionPoints>
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+    <!--<component>-->
+      <!--&lt;!&ndash;<implementation-class>com.thinklint.phpLintProjectComponent</implementation-class>&ndash;&gt;-->
+    <!--</component>-->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
