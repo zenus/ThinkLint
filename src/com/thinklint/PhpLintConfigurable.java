@@ -60,7 +60,7 @@ public class PhpLintConfigurable extends QualityToolProjectConfigurableForm {
 
     @NotNull
     protected QualityToolConfigurationComboBox createConfigurationComboBox() {
-        return new PhpLintConfigurationComboBox();
+        return new PhpLintConfigurationComboBox(myProject);
     }
 }
 

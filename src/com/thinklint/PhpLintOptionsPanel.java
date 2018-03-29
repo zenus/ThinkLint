@@ -18,7 +18,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.Consumer;
 import com.jetbrains.php.config.interpreters.PhpInterpreter;
-import com.jetbrains.php.config.interpreters.PhpInterpretersManager;
+import com.jetbrains.php.config.interpreters.PhpInterpretersManagerImpl;
 import com.jetbrains.php.run.remote.PhpRemoteInterpreterManager;
 import com.jetbrains.php.tools.quality.QualityToolValidationException;
 import com.thinklint.PhpLintConfiguration;
@@ -93,7 +93,7 @@ public class PhpLintOptionsPanel {
 
         try {
             PhpLintConfiguration e = (PhpLintConfiguration)PhpLintProjectConfiguration.getInstance(project).findSelectedConfiguration(project);
-            return e != null && !StringUtil.isEmpty(e.getInterpreterId())?PhpInterpretersManager.getInstance().findInterpreterById(e.getInterpreterId()):null;
+            return e != null && !StringUtil.isEmpty(e.getInterpreterId())? PhpInterpretersManagerImpl.getInstance(project).findInterpreterById(e.getInterpreterId()):null;
         } catch (QualityToolValidationException var3) {
             return null;
         }

@@ -8,6 +8,7 @@ import com.thinklint.PhpLintConfiguration;
 import com.thinklint.PhpLintConfigurationManager;
 import com.jetbrains.php.ui.PhpUiUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +18,8 @@ import java.util.List;
  * Created by zenus on 2015/8/1.
  */
 public class PhpLintConfigurationComboBox extends QualityToolConfigurationComboBox<PhpLintConfiguration> {
-    public PhpLintConfigurationComboBox() {
+    public PhpLintConfigurationComboBox(@Nullable Project project) {
+        super(project);
     }
 
     @NotNull

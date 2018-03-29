@@ -1,12 +1,14 @@
 package com.thinklint;
 
+import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.execution.ExecutionException;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.ArrayUtil;
 import com.jetbrains.php.config.interpreters.PhpInterpreter;
-import com.jetbrains.php.config.interpreters.PhpInterpretersManager;
+import com.jetbrains.php.config.interpreters.PhpInterpretersManagerImpl;
+import com.jetbrains.php.config.interpreters.PhpSdkFileTransfer;
 import com.jetbrains.php.tools.quality.QualityToolAnnotator;
 import com.jetbrains.php.tools.quality.QualityToolAnnotatorInfo;
 import com.jetbrains.php.tools.quality.QualityToolConfiguration;
@@ -32,7 +34,7 @@ public class PhpLintAnnotator extends QualityToolAnnotator {
     }
 
     @Nullable
-    protected QualityToolConfiguration getConfiguration(@NotNull Project project) {
+    protected QualityToolConfiguration getConfiguration(@NotNull Project project, @NotNull LocalInspectionTool inspection) {
         try {
             return PhpLintProjectConfiguration.getInstance(project).findSelectedConfiguration(project);
         } catch (QualityToolValidationException var3) {
@@ -54,6 +56,11 @@ public class PhpLintAnnotator extends QualityToolAnnotator {
     }
 
     protected void runTool(@NotNull QualityToolMessageProcessor messageProcessor, @NotNull QualityToolAnnotatorInfo annotatorInfo) throws ExecutionException {
+
+    }
+
+    @Override
+    protected void runTool(@NotNull QualityToolMessageProcessor messageProcessor, @NotNull QualityToolAnnotatorInfo annotatorInfo, @NotNull PhpSdkFileTransfer transfer) throws ExecutionException {
         ArrayList params = new ArrayList();
         params.add("--project-root");
         params.add((annotatorInfo.getProject()).getBasePath());
@@ -61,34 +68,34 @@ public class PhpLintAnnotator extends QualityToolAnnotator {
         //PhpLintInspection inspection = (PhpLintInspection)annotatorInfo.getInspection();
         //String enabledOptions = inspection.getRuleSetsOption(isRemote(annotatorInfo.getInterpreterId()));
         //if(!enabledOptions.isEmpty()) {
-         //   params.add(enabledOptions);
-            QualityToolProcessCreator.runToolProcess(
-                    annotatorInfo.getProject(),
-                    annotatorInfo.getInterpreterId(),
-                    annotatorInfo.getToolPath(),
-                    annotatorInfo.getTimeout(),
-                    PhpLintBlackList.getInstance(annotatorInfo.getProject()),
-                    messageProcessor,
-                    annotatorInfo.getOriginalFile(),
-                    ArrayUtil.toStringArray(params));
-            if(messageProcessor.getInternalErrorMessage() != null) {
-                if(annotatorInfo.isOnTheFly()) {
-                    PhpLintBlackList blackList = PhpLintBlackList.getInstance(annotatorInfo.getProject());
-                    String message = messageProcessor.getInternalErrorMessage().getMessageText();
-                    showProcessErrorMessage(annotatorInfo, blackList, message);
-                }
-
-                messageProcessor.setFatalError();
+        //   params.add(enabledOptions);
+        QualityToolProcessCreator.runToolProcess(
+                annotatorInfo.getProject(),
+                annotatorInfo.getInterpreterId(),
+                annotatorInfo.getToolPath(),
+                annotatorInfo.getTimeout(),
+                PhpLintBlackList.getInstance(annotatorInfo.getProject()),
+                messageProcessor, null,
+                annotatorInfo.getOriginalFile(),
+                transfer, ArrayUtil.toStringArray(params));
+        if(messageProcessor.getInternalErrorMessage() != null) {
+            if(annotatorInfo.isOnTheFly()) {
+                PhpLintBlackList blackList = PhpLintBlackList.getInstance(annotatorInfo.getProject());
+                String message = messageProcessor.getInternalErrorMessage().getMessageText();
+                showProcessErrorMessage(annotatorInfo, blackList, message);
             }
+
+            messageProcessor.setFatalError();
+        }
 
         //}
     }
 
-    private static boolean isRemote(@Nullable String interpreterId) {
+    private static boolean isRemote(@Nullable String interpreterId, Project project) {
         if(!StringUtil.isNotEmpty(interpreterId)) {
             return false;
         } else {
-            PhpInterpreter interpreter = PhpInterpretersManager.getInstance().findInterpreterById(interpreterId);
+            PhpInterpreter interpreter = PhpInterpretersManagerImpl.getInstance(project).findInterpreterById(interpreterId);
             return interpreter != null && interpreter.isRemote();
         }
     }
