@@ -33,6 +33,7 @@
               />
     <applicationService serviceImplementation="com.thinklint.PhpLintConfigurationManager"/>
     <projectService serviceImplementation="com.thinklint.PhpLintProjectConfiguration"/>
+    <projectService serviceImplementation="com.thinklint.PhpLintBlackList"/>
     <localInspection language="PHP"
                      shortName="PhpLintInspection"
                      enabledByDefault="false"

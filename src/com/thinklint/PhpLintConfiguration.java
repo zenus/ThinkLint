@@ -1,5 +1,6 @@
 package com.thinklint;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.xmlb.annotations.Attribute;
@@ -8,6 +9,7 @@ import com.thinklint.PhpLintConfigurationManager;
 import com.intellij.util.xmlb.annotations.Attribute;
 import com.intellij.util.xmlb.annotations.Transient;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by zenus on 2015/8/1.
@@ -52,7 +54,7 @@ public class  PhpLintConfiguration implements QualityToolConfiguration {
         this.myTimeoutMs = timeout;
     }
 
-    public String getPresentableName() {
+    public String getPresentableName(@Nullable Project project) {
         return this.getId();
     }
 
@@ -84,6 +86,6 @@ public class  PhpLintConfiguration implements QualityToolConfiguration {
     }
 
     public int compareTo(@NotNull QualityToolConfiguration o) {
-        return !(o instanceof PhpLintConfiguration)?1:(StringUtil.equals(this.getPresentableName(), "Local")?-1:(StringUtil.equals(o.getPresentableName(), "Local")?1:StringUtil.compare(this.getPresentableName(), o.getPresentableName(), false)));
+        return !(o instanceof PhpLintConfiguration)?1:(StringUtil.equals(this.getPresentableName(null), "Local")?-1:(StringUtil.equals(o.getPresentableName(null), "Local")?1:StringUtil.compare(this.getPresentableName(null), o.getPresentableName(null), false)));
     }
 }
